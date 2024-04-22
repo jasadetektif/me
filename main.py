@@ -2,7 +2,7 @@ import json
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
 # Load the JSON file
-with open('bos2.json', 'r') as f:
+with open('data.json', 'r') as f:
     data = json.load(f)
 
 # Define the search function
