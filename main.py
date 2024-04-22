@@ -2,7 +2,7 @@ import json
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
 # Load the JSON file
-with open('data.json', 'r') as f:
+with open('bos2.json', 'r') as f:
     data = json.load(f)
 
 # Define the search function
@@ -11,27 +11,25 @@ def search(update, context):
     query = update.message.text
 
     # If the user typed the "/search" command, remove it from the query
-    if query.startswith('/search'):
-        query = ' '.join(context.args)
 
     results = []
 
     # Search the JSON file for the query in the full_name, post, phones, and comment fields
     for item in data:
-        if query.lower() in item['full_name'].lower() \
-            or query.lower() in item['post'].lower() \
-            or query.lower() in ' '.join(item['phones']).lower() \
-            or (item['comment'] and query.lower() in item['comment'].lower()):
+        if query in item['email']\
+            or query in item['no_hp']:
             results.append(item)
 
+    
     # Send the search results to the user
     if results:
         for result in results:
-            message = f"Name: {result['full_name']}\n" \
-                      f"Post: {result['post']}\n" \
-                      f"Phones: {', '.join(result['phones'])}\n"
-            if result['comment']:
-                message += f"Comment: {result['comment']}\n"
+            message = f"Nama: {result['nama']}\n" \
+                      f"DOB :  {result['dob']}\n" \
+                      f"Email :  {result['email']}\n" \
+                      f"No HP :  {result['no_hp']}\n" \
+                      f"Alamat :  {result['alamat']}\n" \
+                      
             update.message.reply_text(message)
     else:
         update.message.reply_text("No results found.")
@@ -43,15 +41,15 @@ def add_contact(update, context):
 
     # Create a new contact dictionary
     new_contact = {
-        'full_name': contact_info[0][5:],  # Remove the first 5 characters ("/add ")
-        'post': contact_info[1],
-        'phones': contact_info[2].split(','),
-        'comment': contact_info[3] if len(contact_info) >= 4 else ''
+        'nama': contact_info[0][5:],  # Remove the first 5 characters ("/add ")
+        'nohp': contact_info[1],
+        'email': contact_info[2].split(','),
+        'dob': contact_info[3] if len(contact_info) >= 4 else ''
     }
 
     # Add the new contact to the JSON file
     data.append(new_contact)
-    with open('data.json', 'w') as f:
+    with open('bos.json', 'w') as f:
         json.dump(data, f, indent=4)
 
     update.message.reply_text("Contact added.")
@@ -64,15 +62,15 @@ def edit_contact(update, context):
     # Find the contact to edit by full_name
     contact_to_edit = None
     for contact in data:
-        if contact['full_name'] == contact_info[0]:
+        if contact['nama'] == contact_info[0]:
             contact_to_edit = contact
             break
 
     # Update the contact if it exists
     if contact_to_edit:
-        contact_to_edit['post'] = contact_info[1]
-        contact_to_edit['phones'] = contact_info[2].split(',')
-        contact_to_edit['comment'] = contact_info[3] if len(contact_info) >= 4 else ''
+        contact_to_edit['nama'] = contact_info[1]
+        contact_to_edit['email'] = contact_info[2]
+        contact_to_edit['nohp'] = contact_info[3] if len(contact_info) >= 4 else ''
         with open('data.json', 'w') as f:
             json.dump(data, f, indent=4)
         update.message.reply_text("Info changed.")
@@ -80,7 +78,7 @@ def edit_contact(update, context):
         update.message.reply_text("No results found.")
 
 # Set up the Telegram bot
-updater = Updater('B6819913642:AAGEsfiTj4DH1QQskUjIdRMx_jsHAf8Z7dU', use_context=True)
+updater = Updater('7129357711:AAGq1DgpRDiisbo704-t4ZiAv1t_ZA6kg18', use_context=True)
 dispatcher = updater.dispatcher
 
 # Add the search command handler
