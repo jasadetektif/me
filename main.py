@@ -78,7 +78,7 @@ def edit_contact(update, context):
         update.message.reply_text("No results found.")
 
 # Set up the Telegram bot
-updater = Updater('7129357711:AAGq1DgpRDiisbo704-t4ZiAv1t_ZA6kg18', use_context=True)
+updater = Updater('token', use_context=True)
 dispatcher = updater.dispatcher
 
 # Add the search command handler
